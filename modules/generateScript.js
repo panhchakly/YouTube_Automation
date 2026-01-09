@@ -1,14 +1,16 @@
-const { Configuration, OpenAIApi } = require("openai");
-require("dotenv").config();
-
-const openai = new OpenAIApi(new Configuration({ apiKey: process.env.OPENAI_API_KEY }));
-
+import { OpenRouter } from '@openrouter/sdk';
 async function generateScript(topic) {
-  const response = await openai.createChatCompletion({
-    model: "gpt-4",
-    messages: [{ role: "user", content: `Write a YouTube video script about: ${topic}` }],
+  // Simulate script generation based on the topic
+  const openrouter = new OpenRouter({
+    apiKey: process.env.OPENROUTER_API_KEY,
   });
-  return response.data.choices[0].message.content;
+  const result = openrouter.callModel({
+    model: 'google/gemma-3-27b-it:free',
+    input: `Write a YouTube video script about: ${topic}`,
+  });
+  // Get text (simplest pattern)
+  const text = await result.getText();
+  return `${text}`;
 }
 
-module.exports = generateScript;
+export { generateScript };
